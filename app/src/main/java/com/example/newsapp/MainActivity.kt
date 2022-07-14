@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.transition.Transition
 import com.example.newsapp.api.NewsService
 import com.example.newsapp.api.RetrofitHelper
+import com.example.newsapp.db.ArticleDatabase
 import com.example.newsapp.repository.NewsRepo
 import com.example.newsapp.viewModel.NewsViewModel
 import com.example.newsapp.viewModel.NewsViewModelFactory
@@ -26,27 +27,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         createRecyclerView()
-
+        val database = ArticleDatabase.getDatabase(applicationContext)
         var newsService = RetrofitHelper.getInstance().create(NewsService::class.java)
-        val repository = NewsRepo(newsService)
+        val repository = NewsRepo(newsService, database.articleDAO())
         newsViewModel = ViewModelProvider(this, NewsViewModelFactory(repository)).get(NewsViewModel::class.java)
 
-        newsViewModel.getNews()
-        newsViewModel.liveData.observe(this, Observer{
-            Log.d("Hello", it.articles.toString())
-        })
 
 //        lifecycleScope.launch() {
 //            newsViewModel.getNewsList().collectLatest {
 //                recyclerViewAdapter.submitData(it)
 //            }
 //        }
-//        itlifecycleScope.launch() {
-//
-//        }
-        newsViewModel.getNewsList2().observe(this@MainActivity, Observer {
-            recyclerViewAdapter.submitData(lifecycle,it)
-        })
+
+        lifecycleScope.launch(){
+            newsViewModel.getNewsList3().observe(this@MainActivity, Observer {
+                recyclerViewAdapter.submitData(lifecycle,it)
+            })
+        }
 
 
     }
@@ -58,7 +55,12 @@ class MainActivity : AppCompatActivity() {
             val decoration =DividerItemDecoration(applicationContext, DividerItemDecoration.VERTICAL)
             addItemDecoration(decoration)
             recyclerViewAdapter = Adapter()
-            adapter = recyclerViewAdapter
+            adapter = recyclerViewAdapter.withLoadStateHeaderAndFooter(
+                header = LoadAdapter(),
+                footer = LoadAdapter()
+            )
+
+            recyclerViewAdapter.retry()
         }
     }
 }

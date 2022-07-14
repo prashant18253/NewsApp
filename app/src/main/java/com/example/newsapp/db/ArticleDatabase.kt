@@ -16,7 +16,8 @@ abstract class ArticleDatabase : RoomDatabase() {
 
         fun getDatabase(context : Context) : ArticleDatabase {
             if(Instance == null){
-                Instance = Room.databaseBuilder(context, ArticleDatabase::class.java, "article_database").build()
+                Instance = Room.databaseBuilder(context, ArticleDatabase::class.java, "article_database")
+                    .build()
             }
             return Instance!!
         }

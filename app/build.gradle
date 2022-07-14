@@ -53,12 +53,17 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
     //paging
-    def paging_version = "3.0.0" //current version at the time
+    def paging_version = "3.1.1" //current version at the time
     implementation "androidx.paging:paging-runtime:$paging_version"
+
+    implementation "androidx.core:core-ktx:1.7.0"
+    implementation 'androidx.activity:activity-ktx:1.4.0'
 
     def roomVersion = "2.4.2"
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+
 
 
 }

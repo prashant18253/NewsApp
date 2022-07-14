@@ -36,19 +36,14 @@ class NewsViewModel(private val repo: NewsRepo) : ViewModel(){
     }
 
 
-    fun getNewsList() : kotlinx.coroutines.flow.Flow<PagingData<Article>>{
-        return Pager(config = PagingConfig(pageSize = 10, maxSize = 50), pagingSourceFactory = {repo.getNewsList()})
-            .flow
-            .cachedIn(viewModelScope)
+//    fun getNewsList2() : LiveData<PagingData<Article>>{
+//        return Pager(config = PagingConfig(pageSize = 10, maxSize = 50), pagingSourceFactory = {repo.getNewsList()})
+//            .flow
+//            .cachedIn(viewModelScope).asLiveData()
+//    }
 
-    }
 
-    fun getNewsList2() : LiveData<PagingData<Article>>{
-        return Pager(config = PagingConfig(pageSize = 10, maxSize = 50), pagingSourceFactory = {repo.getNewsList()})
-            .flow
-            .cachedIn(viewModelScope).asLiveData()
-    }
-    fun getNewsList3() : LiveData<PagingData<Article>>{
-        return repo.getNewsList2().cachedIn(viewModelScope).asLiveData()
+    suspend fun getNewsList3() : LiveData<PagingData<Article>>{
+        return repo.getNewsList3().cachedIn(viewModelScope).asLiveData()
     }
 }
